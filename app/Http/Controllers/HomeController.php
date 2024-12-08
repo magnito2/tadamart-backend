@@ -22,13 +22,19 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
+    public function index(Request $request)
     {
         $products = Product::all();
         $viewData = [];
         $viewData["title"] = "Products - Online Store";
         $viewData["subtitle"] = "List of products";
         $viewData["products"] = $products;
+        
+        if($request->wantsJson()){
+            return response()->json(
+                $viewData
+            , 200);
+        }
         return view('product.index')->with("viewData", $viewData);
     }
 }

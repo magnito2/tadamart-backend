@@ -25,6 +25,13 @@ class CartController extends Controller
         $viewData["subtitle"] = "Shopping Cart";
         $viewData["total"] = $total;
         $viewData["products"] = $productsInCart;
+
+        if($request->wantsJson()){
+            return response()->json(
+                $viewData
+            , 200);
+        }
+
         return view('cart.index')->with("viewData", $viewData);
     }
     public function add(Request $request, $id)
@@ -32,11 +39,28 @@ class CartController extends Controller
         $products = $request->session()->get("products");
         $products[$id] = $request->input('quantity');
         $request->session()->put('products', $products);
+        
+        if($request->wantsJson()){
+            return response()->json(
+                [
+                    'success'=> TRUE
+                ]
+            , 200);
+        }
         return redirect()->route('cart.index');
     }
     public function delete(Request $request)
     {
         $request->session()->forget('products');
+
+        if($request->wantsJson()){
+            return response()->json(
+                [
+                    'success'=> TRUE
+                ]
+            , 200);
+        }
+
         return back();
     }
 
@@ -85,8 +109,24 @@ class CartController extends Controller
             $viewData["title"] = "Purchase - Online Store";
             $viewData["subtitle"] = "Purchase Status";
             $viewData["order"] = $order;
+
+            if($request->wantsJson()){
+                return response()->json(
+                    $viewData
+                , 200);
+            }
+
             return view('cart.purchase')->with("viewData", $viewData);
         } else {
+            if($request->wantsJson()){
+                return response()->json(
+                    [
+                        'success'=> TRUE,
+                        'message' => 'There are no products in the session'
+                    ]
+                , 200);
+            }
+            
             return redirect()->route('cart.index');
         }
     }
