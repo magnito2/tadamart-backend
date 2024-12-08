@@ -37,6 +37,9 @@
                         @csrf
                     </form>
                     @endguest
+                    @if(Auth::check() && (Auth::user()->role === 'admin'))
+                    <a class="nav-link active text-danger" href="{{ route('admin.home.index') }}">Admin</a>
+                    @endif
                 </div>
             </div>
         </div>
